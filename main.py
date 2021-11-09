@@ -17,7 +17,8 @@ s = requests.Session()    #建立会话
 
 ###获取最新大学习期数
 def getLatestVersion():
-    r = s.post(root_url + nvi_url,data = "", headers = {"User-Agent": ua})
+    r = s.post(root_url + nvi_url,data = "", headers = {"User-Agent": ua}, timeout = 30)
+    print("response code= " + str(r.status_code))
     version = r.json()['version']
     return version
 
