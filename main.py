@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 
 # 更新信息后弹出
