@@ -9,6 +9,6 @@ if __name__ == '__main__':
     OPENID_1 = os.environ["OPENID_1"]
     outputstr = "openid = " + OPENID_1
     print("openid = " + outputstr[9]+outputstr[10])
-    if outputstr[9] != 1:
+    if outputstr[9] != '1':
         sys.exit(1)
     print("sucess")
