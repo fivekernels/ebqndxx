@@ -17,3 +17,8 @@ jobs:
       - name: Test Python environment
         run: python --version
 
+      - name: Working
+        env:
+          OPENID_1: ${{ secrets.OPENID_1 }}
+        run: python ./main.py
+
