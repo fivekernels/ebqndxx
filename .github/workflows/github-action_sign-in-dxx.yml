@@ -20,7 +20,7 @@ jobs:
 
       - name: Test Python environment
         run: python --version
-        run: ping qndxx.youth54.cn
+      - run: ping qndxx.youth54.cn
 
       - name: Working
         env:
