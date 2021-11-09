@@ -1,0 +1,19 @@
+name: Sign in QNDXX
+
+# 触发事件
+on: [push]
+
+jobs:
+  # job名称
+  Sign-in-QNDXX
+  runs-on: ubuntu-latest
+  steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Set up a Python environment
+      uses: actions/setup-python@v2
+
+    - name: Test Python environment
+      run: python --version
+
