@@ -4,6 +4,8 @@ import requests
 
 global openid, ua
 openid = os.environ["OPENID_1"]    #微信openid，系统判别方式
+userarg1 = sys.argv[1]
+print(userarg1)
 #模拟微信UA
 ua = "Mozilla/5.0 (Linux; Android 10; ELS-NX9 Build/HUAWEIELS-N29; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2759 MMWEBSDK/201201 Mobile Safari/537.36 MMWEBID/1583 MicroMessenger/8.0.1.1840(0x2800013B) Process/tools WeChat/arm64 Weixin NetType/4G Language/zh_CN ABI/arm64 Edg/95.0.4638.69"
 root_url = "http://qndxx.youth54.cn"    #根地址
