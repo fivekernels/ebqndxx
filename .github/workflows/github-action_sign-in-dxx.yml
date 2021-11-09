@@ -13,6 +13,10 @@ jobs:
 
       - name: Set up a Python environment
         uses: actions/setup-python@v2
+        
+        # 安装脚本所需的依赖
+      - name: 'Install requests'
+        run: pip install requests
 
       - name: Test Python environment
         run: python --version
