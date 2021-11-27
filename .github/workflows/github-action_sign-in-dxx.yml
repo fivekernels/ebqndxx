@@ -1,9 +1,7 @@
 name: Sign in QNDXX
 
 # 触发事件
-on: [push]
-    branches:
-      - dev
+# on: [push]
 
 jobs:
   # job名称
