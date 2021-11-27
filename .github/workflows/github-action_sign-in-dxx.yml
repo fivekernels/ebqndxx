@@ -3,26 +3,26 @@ name: Sign in QNDXX
 # 触发事件
 on: [push]
 
-# jobs:
-#   # job名称
-#   Sign-in-QNDXX:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Check out repository code
-#         uses: actions/checkout@v2
+jobs:
+  # job名称
+  Sign-in-QNDXX:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
 
-#       - name: Set up a Python environment
-#         uses: actions/setup-python@v2
+      - name: Set up a Python environment
+        uses: actions/setup-python@v2
 
-#         # 安装脚本所需的依赖
-#       - name: 'Install requests'
-#         run: pip install requests
+        # 安装脚本所需的依赖
+      - name: 'Install requests'
+        run: pip install requests
 
-#       - name: Test Python environment
-#         run: python --version
+      - name: Test Python environment
+        run: python --version
 
-#       - name: Working
-#         env:
-#           OPENID_1: ${{ secrets.OPENID_1 }}
-#         run: python ./app/main.py
+      # - name: Working
+      #   env:
+      #     OPENID_1: ${{ secrets.OPENID_1 }}
+      #   run: python ./app/main.py
 
