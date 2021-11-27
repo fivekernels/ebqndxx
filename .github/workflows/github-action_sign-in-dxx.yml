@@ -1,7 +1,7 @@
 name: Sign in QNDXX
 
 # 触发事件
-on: [push]:
+on: [push]
     branches:
       - dev
 
