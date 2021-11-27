@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  ebqndxx_app:
+    build: .
+    # image: python:latest
+    container_name: ebqndxx_app # docker容器名
+    volumes:  # 挂载目录
+      - ./app:/home/app  # 项目相关
+      - ./docker:/home/docker  # docker相关
+      - ./crontab_autodxx:/etc/cron.d/crontab
+    environment:
+      - TZ=Asia/Shanghai  # 设置时区
+      # - APP_OPENID=0
+    # command: bash /docker/run.sh $APP_OPENID # 设置启动命令
+    command: bash /home/docker/run.sh # 设置启动命令
+    # command: cron && tail -f /var/log/cron.log
+    restart: unless-stopped  # 自动启动
