@@ -1,8 +1,10 @@
 import os
 import sys
 import json
-import requests
+import time
+import random
 import getopt
+import requests
 
 from CommonLogging import CommonLogging
 from EmailService import SendEmail
@@ -149,6 +151,11 @@ def sendEmailResult(singleUserJson, resultCode):
     SendEmail('dxx auto notice', reseiverAddress, mailContent, 'dxx weekly result')
 
 if __name__ == '__main__':
+
+    delaySeconds = random.randint(0, 15*60) # 15分钟随机
+    commlogger.info("delay " + str(delaySeconds))
+    time.sleep(delaySeconds)
+
     # OPENID_1 = os.environ["OPENID_1"]
     # outputstr = "openid = " + OPENID_1
     # commlogger.debug("openid = " + outputstr[9]+outputstr[10])

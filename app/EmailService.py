@@ -7,7 +7,7 @@ from CommonLogging import CommonLogging
 
 commlogger = CommonLogging().getlog()
 
-# sender = 'sender@example.com'
+# sender = 'example@example.com'
 # receivers = ['receiver@example.com']  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
  
 # # 三个参数：第一个为文本内容，第二个 plain 设置文本格式，第三个 utf-8 设置编码
@@ -82,4 +82,4 @@ def SendEmail(from_header, to_addr, email_msg, subject):
 #     mailContentFile = open('Mail-Content_en.txt', 'r', encoding='utf-8')
 #     mailContent = mailContentFile.read()
 #     mailContentFile.close()
-#     SendEmail('dxx auto notice', 'receiver@example.com', mailContent, 'dxx weekly result')
+#     SendEmail('dxx auto notice', 'example@example.com', mailContent, 'dxx weekly result')
