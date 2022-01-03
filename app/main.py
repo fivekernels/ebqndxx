@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import os
 import sys
 import json
@@ -176,9 +178,8 @@ if __name__ == '__main__':
 
         latestRecord = getStudyRecord(openid)
         if latestRecord is None:
-            commlogger.warning("None last record, skip")
-            continue
-        if ( latestVersion == latestRecord ):
+            commlogger.warning("None last record, sign in anymore")
+        elif ( latestVersion == latestRecord ):
             commlogger.info("already signed")
             sendEmailResult(userJsonData[i], 1)
             continue

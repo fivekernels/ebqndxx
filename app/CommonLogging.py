@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import logging
 
 class CommonLogging(object):
@@ -15,7 +17,7 @@ class CommonLogging(object):
             ch = logging.StreamHandler()
             ch.setLevel(logging.DEBUG)  # 输出到console的log等级
             # 4定义handler的输出格式（时间，文件，函数，行数，错误级别，错误提示）
-            formatter = logging.Formatter("%(asctime)s - %(filename)s->%(funcName)s [line:%(lineno)d] - %(levelname)s: %(message)s")
+            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(filename)s->%(funcName)s [line:%(lineno)d]: %(message)s")
             fh.setFormatter(formatter)
             ch.setFormatter(formatter)
             # 5给logger添加handler
