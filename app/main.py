@@ -10,6 +10,7 @@ import requests
 
 from CommonLogging import CommonLogging
 from EmailService import SendEmail
+from DingBotService import SendDingBotMsg
 
 commlogger = CommonLogging().getlog()
 
@@ -152,6 +153,17 @@ def sendEmailResult(singleUserJson, resultCode):
 
     SendEmail('dxx auto notice', reseiverAddress, mailContent, 'dxx weekly result')
 
+## 使用钉钉机器人发送签到结果
+def sendDingBotResult(singleUserJson, resultCode):
+    commlogger.info("sending bot msg...")
+    if resultCode == 0: # sucess
+        # sucess
+        SendDingBotMsg("QNDXX signed in success: " + singleUserJson['name'])
+    elif resultCode == 1: # already
+        # already
+        SendDingBotMsg("QNDXX already signed: " + singleUserJson['name'])
+    return True
+
 if __name__ == '__main__':
 
     delaySeconds = random.randint(0, 15*60) # 15分钟随机
@@ -181,7 +193,8 @@ if __name__ == '__main__':
             commlogger.warning("None last record, sign in anymore")
         elif ( latestVersion == latestRecord ):
             commlogger.info("already signed")
-            sendEmailResult(userJsonData[i], 1)
+            # sendEmailResult(userJsonData[i], 1)
+            sendDingBotResult(userJsonData[i], 1)
             continue
             
         commlogger.info("start to sign")
@@ -192,6 +205,7 @@ if __name__ == '__main__':
             commlogger.info(response_sign['errmsg'])
         else:
             commlogger.info("sign in sucess, version = " + latestVersion)
-            sendEmailResult(userJsonData[i], 0)
+            # sendEmailResult(userJsonData[i], 0)
+            sendDingBotResult(userJsonData[i], 0)
 
     commlogger.info("exit, bye.")
