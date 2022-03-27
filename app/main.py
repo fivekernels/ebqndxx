@@ -20,26 +20,6 @@ for opt_name, opt_value in opts:
     if opt_name in ('-c', '--caller'):
         callerArgv = opt_value
 
-# # https://wp.for-get.com/349.html
-# # https://blog.csdn.net/rusi__/article/details/100122350
-# # 第一步，创建一个logger
-# logger = logging.getLogger()
-# logger.setLevel(logging.INFO)  # Log等级总开关  此时是INFO
-# # 第二步，创建一个handler，用于写入日志文件
-# logfile = '/home/app/info.log'
-# fh = logging.FileHandler(logfile, mode='a')  # open的打开模式这里可以进行参考
-# fh.setLevel(logging.INFO)  # 输出到file的log等级的开关
-# # 第三步，再创建一个handler，用于输出到控制台
-# ch = logging.StreamHandler()
-# ch.setLevel(logging.DEBUG)   # 输出到console的log等级的开关
-# # 第四步，定义handler的输出格式（时间，文件，行数，错误级别，错误提示）
-# formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
-# fh.setFormatter(formatter)
-# ch.setFormatter(formatter)
-# # 第五步，将logger添加到handler里面
-# logger.addHandler(fh)
-# logger.addHandler(ch)
-
 commlogger.info('program main start, called by ' + callerArgv)
 # sys.exit(0)
 
@@ -94,15 +74,21 @@ s = requests.Session()    #建立会话
 def getLatestVersion(para_openid):
     r = s.post(root_url + nvi_url + para_openid,data = "", headers = {"User-Agent": ua}, timeout = 30)
     commlogger.info("response code= " + str(r.status_code))
-    version = r.json()['version']
-    return version
+    try:
+        version = r.json()['version']
+        commlogger.info("got latest version: " + version)
+        return version
+    except Exception as e:
+        commlogger.error("geting version exception: " + str(e) +  ".r = " + r)
+        return None
 
-### 获取当前学习记录
+# 获取当前学习记录
 def getStudyRecord(para_openid):
     r = s.get(root_url + record_url + para_openid)
     # commlogger.debug(r)
     try:
         latestRecordData = r.json()['vds'][0]
+        commlogger.info("got last record: " + latestRecordData['version'])
         return latestRecordData['version']
     except Exception as e:
         commlogger.warning("catch exception: " + str(e))
@@ -122,7 +108,7 @@ def signNewRecord(version, para_openid):    #签到最新一期，书写方式�
     r = s.post(root_url + sign_url, data = data, headers = headers)
     return r.json()
 
-## 发送邮件签到结果
+# 发送邮件签到结果
 def sendEmailResult(singleUserJson, resultCode):
     try:
         commlogger.info("getting email address")
@@ -153,12 +139,12 @@ def sendEmailResult(singleUserJson, resultCode):
 
     SendEmail('dxx auto notice', reseiverAddress, mailContent, 'dxx weekly result')
 
-## 使用钉钉机器人发送签到结果
+# 使用钉钉机器人发送签到结果
 def sendDingBotResult(singleUserJson, resultCode):
     commlogger.info("sending bot msg...")
     if resultCode == 0: # sucess
         # sucess
-        SendDingBotMsg("QNDXX signed in success: " + singleUserJson['name'])
+        SendDingBotMsg("QNDXX signed in successfully: " + singleUserJson['name'])
     elif resultCode == 1: # already
         # already
         SendDingBotMsg("QNDXX already signed: " + singleUserJson['name'])
@@ -177,35 +163,33 @@ if __name__ == '__main__':
     #     sys.exit(1)
     # commlogger.debug("sucess")
 
-    
     for i in range(len(userJsonData)):
         # commlogger.debug("i = " + str(i) + ", openid = " + userJsonData[i]['openid'])
-        if ( i == 0 ):
+        if ( userJsonData[i]['enable'] == False ):
             continue
-        commlogger.info("start i = " + str(i))
+        commlogger.info("start i = %d, name = %s", i, userJsonData[i]['name'])
         openid = userJsonData[i]['openid']
 
         latestVersion = getLatestVersion(openid)
-        commlogger.info("latestVersion = " + latestVersion)
-
         latestRecord = getStudyRecord(openid)
+
         if latestRecord is None:
-            commlogger.warning("None last record, sign in anymore")
+            commlogger.warning("last record is None, sign in anymore")
         elif ( latestVersion == latestRecord ):
             commlogger.info("already signed")
             # sendEmailResult(userJsonData[i], 1)
             sendDingBotResult(userJsonData[i], 1)
             continue
             
-        commlogger.info("start to sign")
+        commlogger.info("starting sign in")
 
         response_sign = signNewRecord(latestVersion, openid)
         # commlogger.debug("response = " + str(response_sign))
         if response_sign['errcode'] != "0":
-            commlogger.info(response_sign['errmsg'])
+            commlogger.warning(response_sign['errmsg'])
         else:
-            commlogger.info("sign in sucess, version = " + latestVersion)
+            commlogger.info("sign in successfully, version = " + latestVersion)
             # sendEmailResult(userJsonData[i], 0)
             sendDingBotResult(userJsonData[i], 0)
 
-    commlogger.info("exit, bye.")
+    commlogger.info("finished, bye.")

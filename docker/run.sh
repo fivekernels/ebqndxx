@@ -17,7 +17,7 @@ chown root:root /etc/cron.d/crontab
 chmod 0644 /etc/cron.d/crontab
 # touch /var/log/cron.log
 
-# 运行API入口脚本
-python /home/app/main.py -c run.sh
+# # 运行API入口脚本
+# python /home/app/main.py -c run.sh
 # env >> /etc/default/locale
 cron && tail -f /var/log/cron.log
