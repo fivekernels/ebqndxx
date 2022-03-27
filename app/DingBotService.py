@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 
@@ -5,11 +6,13 @@ from CommonLogging import CommonLogging
 
 commlogger = CommonLogging().getlog()
 
+WorkingDir = os.path.split(os.path.realpath(__file__))[0] + '/'
+
 WebhookUrlPrefix = "https://oapi.dingtalk.com/robot/send?access_token="
 
 def SendDingBotMsg(message):
     # 读取json
-    f = open("/home/app/secrets/ding-bot.json",'r',encoding='utf-8')
+    f = open(WorkingDir + "secrets/ding-bot.json",'r',encoding='utf-8')
     webHookConfig = json.load(f)
     f.close()
     accessToken = webHookConfig['access_token']

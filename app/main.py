@@ -14,16 +14,10 @@ from DingBotService import SendDingBotMsg
 
 commlogger = CommonLogging().getlog()
 
-opts, args = getopt.getopt(sys.argv[1:], '-c:', longopts=['caller=']) # 指定参数格式 短格式(':'必须带参数) 长格式(必须对应'='带参数)
-callerArgv = '<no caller argv>'
-for opt_name, opt_value in opts:
-    if opt_name in ('-c', '--caller'):
-        callerArgv = opt_value
+WorkingDir = os.path.split(os.path.realpath(__file__))[0] + '/'
 
-commlogger.info('program main start, called by ' + callerArgv)
 # sys.exit(0)
 
-WorkingDir = '/home/app/'
 # global openid, ua
 # global ua
 
@@ -48,16 +42,6 @@ WorkingDir = '/home/app/'
 # sys.exit(1)
 # openid = str(openids[0])
 
-# 读取json
-f = open(WorkingDir + 'secrets/openids.json','r',encoding='utf-8')
-userJsonData = json.load(f)
-
-# for i in range(len(userJsonData)):
-#     commlogger.debug("i = " + str(i) + ", openid = " + userJsonData[i]['openid'])
-# sys.exit(1)
-
-# openid = "0"
-
 #模拟微信UA
 ua = "Mozilla/5.0 (Linux; Android 10; ELS-NX9 Build/HUAWEIELS-N29; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2759 MMWEBSDK/201201 Mobile Safari/537.36 MMWEBID/1583 MicroMessenger/8.0.1.1840(0x2800013B) Process/tools WeChat/arm64 Weixin NetType/4G Language/zh_CN ABI/arm64 Edg/95.0.4638.69"
 root_url = "http://qndxx.youth54.cn"    #根地址
@@ -65,8 +49,32 @@ nvi_url = "/SmartLA/dxxjfgl.w?method=getNewestVersionInfo&openid="  #获取最�
 record_url = "/SmartLA/dxxjfgl.w?method=queryPersonStudyRecord&openid=" # 查询所有学习记录
 sign_url = "/SmartLA/dxxjfgl.w?method=studyLatest"    #签到地址
 
-# 更新信息后弹出
-# http://qndxx.youth54.cn/SmartLA/lottery.w?method=enterMainPage&version=
+# http://qndxx.youth54.cn/SmartLA/lottery.w?method=enterMainPage&version= # 更新信息后弹出
+
+# 获取调用参数
+def GetArgvs():
+    """ 规定并获取运行程序时附加的参数
+
+    :param : None
+    :return: [ditt]参数名称-参数值: {"<longopts_1>": <value_1(string or int or ...)>, ...}
+    :rtype: dict
+    """    
+    argvDict = {}
+    opts, args = getopt.getopt(sys.argv[1:], '-t:-c:', longopts=['timedelay=', 'caller=']) # 指定参数格式 短格式(':'必须带参数) 长格式(必须对应'='带参数)
+    argvDict['caller'] = '<no caller argv>'
+    argvDict['timedelay'] = 30*60 # 默认30分钟
+    for opt_name, opt_value in opts:
+        if opt_name in ('-c', '--caller'):
+            argvDict['caller'] = opt_value
+        if opt_name in ('-t', '--time'):
+            argvDict['timedelay'] = int(opt_value)
+    return argvDict
+
+# 读取json
+def ReadJsonFile(fileReltivePath):
+    f = open(WorkingDir + fileReltivePath,'r',encoding='utf-8')
+    userJsonData = json.load(f)
+    return userJsonData
 
 s = requests.Session()    #建立会话
 
@@ -152,7 +160,12 @@ def sendDingBotResult(singleUserJson, resultCode):
 
 if __name__ == '__main__':
 
-    delaySeconds = random.randint(0, 15*60) # 15分钟随机
+    callerArgvs = GetArgvs() # 获取调用参数
+    commlogger.info('program main start, called by ' + callerArgvs['caller'])
+
+    userJsonData = ReadJsonFile('secrets/openids.json') # 读取openid
+
+    delaySeconds = random.randint(0, callerArgvs['timedelay']) # 默认30分钟随机
     commlogger.info("delay " + str(delaySeconds))
     time.sleep(delaySeconds)
 
@@ -191,5 +204,6 @@ if __name__ == '__main__':
             commlogger.info("sign in successfully, version = " + latestVersion)
             # sendEmailResult(userJsonData[i], 0)
             sendDingBotResult(userJsonData[i], 0)
+            time.sleep(65) # 65秒延时 后续改为随机
 
     commlogger.info("finished, bye.")
