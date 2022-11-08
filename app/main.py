@@ -113,8 +113,13 @@ def signNewRecord(version, para_openid):    #签到最新一期，书写方式�
         "openid": para_openid,
         "version":version
         }
-    r = s.post(root_url + sign_url, data = data, headers = headers)
-    return r.json()
+    try:
+        r = s.post(root_url + sign_url, data = data, headers = headers)
+        commlogger.debug("response = " + str(r))
+        return r.json()
+    except Exception as e:
+        commlogger.warning("requests post with exception: " + str(e))
+        return None
 
 # 发送邮件签到结果
 def sendEmailResult(singleUserJson, resultCode):
@@ -195,15 +200,17 @@ if __name__ == '__main__':
             continue
             
         commlogger.info("starting sign in")
-
         response_sign = signNewRecord(latestVersion, openid)
-        # commlogger.debug("response = " + str(response_sign))
-        if response_sign['errcode'] != "0":
+
+        if response_sign is None:
+            commlogger.warning("signNewRecord() return None")
+        elif response_sign['errcode'] != "0":
             commlogger.warning(response_sign['errmsg'])
         else:
             commlogger.info("sign in successfully, version = " + latestVersion)
             # sendEmailResult(userJsonData[i], 0)
             sendDingBotResult(userJsonData[i], 0)
+            commlogger.info("waiting 65s before next user...")
             time.sleep(65) # 65秒延时 后续改为随机
 
     commlogger.info("finished, bye.")
